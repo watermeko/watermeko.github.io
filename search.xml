@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>手机自动化操作：Scrpy、pyautogui与pytesseract</title>
+      <link href="/2024/01/08/%E6%89%8B%E6%9C%BA%E8%87%AA%E5%8A%A8%E5%8C%96%E6%93%8D%E4%BD%9C%EF%BC%9AScrpy%E3%80%81Pyautogui%E4%B8%8EPytesseract/"/>
+      <url>/2024/01/08/%E6%89%8B%E6%9C%BA%E8%87%AA%E5%8A%A8%E5%8C%96%E6%93%8D%E4%BD%9C%EF%BC%9AScrpy%E3%80%81Pyautogui%E4%B8%8EPytesseract/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>常常需要在手机上进行一些自动化操作，然而在手机上运行的脚本远远不如能在电脑上运行的脚本强大。我们可以借助Scrpy将手机画面投射到电脑上，再在电脑上运行脚本。</p><h1 id="Scrpy的使用"><a href="#Scrpy的使用" class="headerlink" title="Scrpy的使用"></a>Scrpy的使用</h1><p>Scrpy的官方简介：</p><blockquote><p>This application mirrors Android devices (video and audio) connected via USB or <a href="https://github.com/Genymobile/scrcpy/blob/master/doc/connection.md#tcpip-wireless">over TCP&#x2F;IP</a>, and allows to control the device with the keyboard and the mouse of the computer. It does not require any <em>root</em> access. It works on <em>Linux</em>, <em>Windows</em> and <em>macOS</em>.</p></blockquote><p>从<a href="https://github.com/Genymobile/scrcpy">这里</a>下载scrpy，解压到你能记住的位置，随后把scrpy的主目录路径添加至系统环境变量中。此外，我们还需要<a href="https://github.com/Tomotoes/scrcpy-gui">scrcpy-gui</a>，这是一个为scrpy开发的中文gui程序。</p><p>以管理员模式运行<code>ScrcpyGui.exe</code>，然后使用数据线连接手机和电脑。在出现的列表中勾选你的设备，并点击:<code>打开镜像</code>。</p><p>如果连接失败：</p><ul><li><p>确认手机的usb调试功能是否打开</p></li><li><p>确认手机usb是否允许传输多媒体（文件）</p></li><li><p>尝试重启电脑，以及重新连接数据线</p></li></ul><p>如果一切正常，电脑上就会弹出窗口显示手机的画面，你可以用鼠标操作它。</p><h1 id="Pyautogui的使用"><a href="#Pyautogui的使用" class="headerlink" title="Pyautogui的使用"></a>Pyautogui的使用</h1><h1 id="Pytesseract的使用"><a href="#Pytesseract的使用" class="headerlink" title="Pytesseract的使用"></a>Pytesseract的使用</h1>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 软件 </tag>
+            
+            <tag> 编程 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Python：一些提高代码质量的基本 Type hinting</title>
       <link href="/2023/11/22/Python%EF%BC%9A%E4%B8%80%E4%BA%9B%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F%E7%9A%84%E5%9F%BA%E6%9C%AC-Type-hinting/"/>
       <url>/2023/11/22/Python%EF%BC%9A%E4%B8%80%E4%BA%9B%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F%E7%9A%84%E5%9F%BA%E6%9C%AC-Type-hinting/</url>
@@ -13,6 +34,8 @@
       
       
         <tags>
+            
+            <tag> 编程 </tag>
             
             <tag> Python </tag>
             
@@ -33,7 +56,7 @@
       
         <tags>
             
-            <tag> 电子 </tag>
+            <tag> 硬件 </tag>
             
         </tags>
       
