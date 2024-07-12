@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MSP430之时钟频率设置 | watermeko blog</title><meta name="author" content="watermeko"><meta name="copyright" content="watermeko"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简介MSP430有三个时钟，分别是MCLK、SMCLK、ACLK。  MCLK：主系统时钟。MCLK是CPU的运行时钟，MCLK频率越高，CPU运行越快，同时功耗越高。 SMCLK：子系统时钟。SMCLK可以提供给需要高速时钟的外设（如ADC、定时器。1.2 MSP430的五个时钟源 ACLK：辅助时钟。辅助时钟的频率一般很低，功耗小，可以一直开启。  这三个时钟可由五个时钟源经过分频后提供，分别">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MSP430之时钟频率设置">
+<meta property="og:url" content="http://watermeko.github.io/2024/07/12/MSP430%E4%B9%8B%E6%97%B6%E9%92%9F%E9%A2%91%E7%8E%87%E8%AE%BE%E7%BD%AE/index.html">
+<meta property="og:site_name" content="watermeko blog">
+<meta property="og:description" content="简介MSP430有三个时钟，分别是MCLK、SMCLK、ACLK。  MCLK：主系统时钟。MCLK是CPU的运行时钟，MCLK频率越高，CPU运行越快，同时功耗越高。 SMCLK：子系统时钟。SMCLK可以提供给需要高速时钟的外设（如ADC、定时器。1.2 MSP430的五个时钟源 ACLK：辅助时钟。辅助时钟的频率一般很低，功耗小，可以一直开启。  这三个时钟可由五个时钟源经过分频后提供，分别">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://telegraph-image-6ky.pages.dev/file/e514ca8e932c0b08a1563.jpg">
+<meta property="article:published_time" content="2024-07-12T15:12:16.000Z">
+<meta property="article:modified_time" content="2024-07-12T16:01:43.603Z">
+<meta property="article:author" content="watermeko">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://telegraph-image-6ky.pages.dev/file/e514ca8e932c0b08a1563.jpg"><link rel="shortcut icon" href="https://1896132f.telegraph-image-6ky.pages.dev/file/396c40798ba7cfe4a5595.jpg"><link rel="canonical" href="http://watermeko.github.io/2024/07/12/MSP430%E4%B9%8B%E6%97%B6%E9%92%9F%E9%A2%91%E7%8E%87%E8%AE%BE%E7%BD%AE/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MSP430之时钟频率设置',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-13 00:01:43'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://1896132f.telegraph-image-6ky.pages.dev/file/396c40798ba7cfe4a5595.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://telegraph-image-6ky.pages.dev/file/e514ca8e932c0b08a1563.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="watermeko blog"><span class="site-name">watermeko blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MSP430之时钟频率设置</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-12T15:12:16.000Z" title="发表于 2024-07-12 23:12:16">2024-07-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-12T16:01:43.603Z" title="更新于 2024-07-13 00:01:43">2024-07-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/07/12/MSP430%E4%B9%8B%E6%97%B6%E9%92%9F%E9%A2%91%E7%8E%87%E8%AE%BE%E7%BD%AE/#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>MSP430有三个时钟，分别是MCLK、SMCLK、ACLK。</p>
+<ul>
+<li>MCLK：主系统时钟。MCLK是CPU的运行时钟，MCLK频率越高，CPU运行越快，同时功耗越高。</li>
+<li>SMCLK：子系统时钟。SMCLK可以提供给需要高速时钟的外设（如ADC、定时器。<br>1.2 MSP430的五个时钟源</li>
+<li>ACLK：辅助时钟。辅助时钟的频率一般很低，功耗小，可以一直开启。</li>
+</ul>
+<p>这三个时钟可由五个时钟源经过分频后提供，分别是XT1CLK、XT2CLK、VLOCLK、REFCLK、DCOCL。</p>
+<ul>
+<li>XT1CLK（低频&#x2F;高频时钟源）：XT1CLK可以作为内部FLL模块的参考时钟，且它是FLL模块（频锁环模块）的默认参考时钟。FLL时钟除锁频之外还可以对时钟进行倍频或分频。</li>
+<li>XT2CLK（高频时钟源）：XT2CLK可以作为FLL的内部参考时钟。</li>
+<li>VLOCLK（低频内部时钟源）</li>
+<li>REFCLK（低频时钟源，内部的参考时钟源）：可以作为内部FLL的参考时钟。</li>
+<li>DCOCLK（片内数字控制时钟源）：通过内部FLL模块稳定，一般为1MHz。<br>其中XT1CLK、XT2CLK可由外部晶振提供。片内时钟源受温度影响大，频率一般不会很准确。</li>
+</ul>
+<h1 id="设置MSP430F5529的时钟"><a href="#设置MSP430F5529的时钟" class="headerlink" title="设置MSP430F5529的时钟"></a>设置MSP430F5529的时钟</h1><p>目的是将MCLK、SMCLK设置为XT2CLK（外部晶振 4Mhz）经过倍频后得到的24Mhz时钟；将ACLK设置为XT1CLK（外部晶振 32.768Khz）。</p>
+<p>芯片的默认电压低，不足以支持高速的时钟频率，所以首先提升电压：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PMM_setVCore(PMM_CORE_LEVEL_3);</span><br></pre></td></tr></table></figure>
+<p>设置XT1CLK与XT2CLK引脚为复用功能：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P5,GPIO_PIN4 + GPIO_PIN5);</span><br><span class="line">GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P5,GPIO_PIN2 + GPIO_PIN3);</span><br></pre></td></tr></table></figure>
+<p>设置XT1CLK与XT2CLK外接晶振的频率：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UCS_setExternalClockSource(<span class="number">32768</span>,<span class="number">4000000</span>);</span><br></pre></td></tr></table></figure>
+<p>开启XT1CLK与XT2CLK：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">UCS_turnOnLFXT1WithTimeout(UCS_XT1_DRIVE_0,UCS_XCAP_3,<span class="number">50000</span>);</span><br><span class="line">UCS_turnOnXT2WithTimeout(UCS_XT2_DRIVE_4MHZ_8MHZ,<span class="number">50000</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>将XT1CLK作为ACLK时钟源，XT2CLK作为FLL参考时钟源、MCLK和SMCLK时钟源：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">UCS_initClockSignal(UCS_ACLK,UCS_XT1CLK_SELECT,UCS_CLOCK_DIVIDER_1)</span><br><span class="line">UCS_initClockSignal(UCS_FLLREF,UCS_XT2CLK_SELECT,UCS_CLOCK_DIVIDER_1);</span><br><span class="line">UCS_initClockSignal(UCS_MCLK, UCS_XT2CLK_SELECT, UCS_CLOCK_DIVIDER_1);</span><br><span class="line">UCS_initClockSignal(UCS_SMCLK, UCS_XT2CLK_SELECT, UCS_CLOCK_DIVIDER_1);</span><br></pre></td></tr></table></figure>
+<p>提升MCLK的频率：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UCS_initFLLSettle(<span class="number">24000</span>, <span class="number">6</span>); <span class="comment">// 6*4Mhz = 24Mhz</span></span><br></pre></td></tr></table></figure>
+<p>最后开启时钟源中断：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SFR_clearInterrupt(SFR_OSCILLATOR_FAULT_INTERRUPT);</span><br><span class="line">SFR_enableInterrupt(SFR_OSCILLATOR_FAULT_INTERRUPT);</span><br></pre></td></tr></table></figure>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><p><code>clock.h</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __CLOCK_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __CLOCK_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;driverlib.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UCS_XT1_TIMEOUT 50000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UCS_XT2_TIMEOUT 50000</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UCS_XT1_CRYSTAL_FREQUENCY 32768</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UCS_XT2_CRYSTAL_FREQUENCY 4000000</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UCS_MCLK_DESIRED_FREQUENCY_IN_KHZ 24000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UCS_MCLK_FLLREF_RATIO 6</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Clock_Init</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p><code>clock.c</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;clock.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">Clock_Init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    PMM_setVCore(PMM_CORE_LEVEL_3);</span><br><span class="line"></span><br><span class="line">    GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P5,GPIO_PIN4 + GPIO_PIN5);</span><br><span class="line"></span><br><span class="line">    UCS_setExternalClockSource(UCS_XT1_CRYSTAL_FREQUENCYUCS_XT2_CRYSTAL_FREQUENCY);</span><br><span class="line"></span><br><span class="line">    UCS_turnOnLFXT1WithTimeout(UCS_XT1_DRIVE_0,UCS_XCAP_3,UCS_XT1_TIMEOUT);</span><br><span class="line"></span><br><span class="line">    GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P5,GPIO_PIN2 +GPIO_PIN3);</span><br><span class="line"></span><br><span class="line">    UCS_turnOnXT2WithTimeout(UCS_XT2_DRIVE_4MHZ_8MHZ,UCS_XT2_TIMEOUT);</span><br><span class="line"></span><br><span class="line">    UCS_initClockSignal(UCS_ACLK,UCS_XT1CLK_SELECT,UCS_CLOCK_DIVIDER_1);</span><br><span class="line"></span><br><span class="line">    UCS_initClockSignal(UCS_FLLREF,UCS_XT2CLK_SELECT,UCS_CLOCK_DIVIDER_1);</span><br><span class="line"></span><br><span class="line">    UCS_initClockSignal(UCS_MCLK, UCS_XT2CLK_SELECT, UCS_CLOCK_DIVIDER_1);</span><br><span class="line">    UCS_initClockSignal(UCS_SMCLK, UCS_XT2CLK_SELECT, UCS_CLOCK_DIVIDER_1);</span><br><span class="line"></span><br><span class="line">    UCS_initFLLSettle(UCS_MCLK_DESIRED_FREQUENCY_IN_KHZ,UCS_MCLK_FLLREF_RATIO);</span><br><span class="line"></span><br><span class="line">    SFR_clearInterrupt(SFR_OSCILLATOR_FAULT_INTERRUPT);</span><br><span class="line">    SFR_enableInterrupt(SFR_OSCILLATOR_FAULT_INTERRUPT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://www.ti.com.cn/cn/lit/ug/slau208q/slau208q.pdf?ts=1720759768255&ref_url=https%253A%252F%252Fwww.ti.com.cn%252Fproduct%252Fcn%252FMSP430F5505%253Fbm-verify%253DAAQAAAAJ_____zQL_8XXyT-qieWFOLRdPysE8TkGiFj3XgUiBCwI9QVIISZqtyzZXcmtV_N1ITm__sV70ej4__s_pTGWeZkVl9Xb3OQ1WwSu3fUpKgpltXexUM01Cve25inEhSyKX6JLG1_BYyPDlFrS7VlDNVVZXd7ys9jZzFutCuaQ8DbTgCT6ujZtHcn8CI8WdA2V2WOdC9-5iqUlTwX1RxFdk3OlRwY9bFgUMt-VYU_6RMaA0q0nxZKCZ4WTI5xeHVUvX44h7wq8BTv-Ol_3mYFIccsUiEfcS1F_sTknUNxAiaWRE__BloplBiU7FgvfZh0usODaIJD7OwTW1zUtBoOX8bBYFjHIloaBRg6W0CWNunBi4RQYuc86eisTxH1WGlsK0D-uTLjEWYmISJvdwkqdKsI8zw4gzM4KtWcM">MSP430x5xx and MSP430x6xx Family User’s Guide</a><br><a target="_blank" rel="noopener" href="https://www.ti.com.cn/cn/lit/ug/slau533d/slau533d.pdf?ts=1720752623564&ref_url=https%253A%252F%252Fwww.ti.com.cn%252Ftool%252Fcn%252FMSP-EXP430F5529LP%253FkeyMatch%253D%2526tisearch%253Dsearch-everything%2526usecase%253Dhardware">MSP430F5529 LaunchPad Development Kit (MSP-EXP430F5529LP) User’s Guide (Rev. D)</a></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://telegraph-image-6ky.pages.dev/file/e514ca8e932c0b08a1563.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://1896132f.telegraph-image-6ky.pages.dev/file/396c40798ba7cfe4a5595.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">watermeko</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/watermeko"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEMSP430F5529%E7%9A%84%E6%97%B6%E9%92%9F"><span class="toc-number">2.</span> <span class="toc-text">设置MSP430F5529的时钟</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">4.</span> <span class="toc-text">参考资料</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By watermeko</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo"></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly"></a>&nbsp;</a>&nbsp;<a target="_blank" href="https://github.com/watermeko/watermeko.github.io"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管"></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://main--watermeko-twikoo.netlify.app/.netlify/functions/twikoo',
+      region: 'us-east-1',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://main--watermeko-twikoo.netlify.app/.netlify/functions/twikoo',
+      region: 'us-east-1',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(init,0)
+    else getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(init)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
